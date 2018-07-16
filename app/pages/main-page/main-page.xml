@@ -1,0 +1,120 @@
+<!--
+The markup in NativeScript apps contains a series of user interface components, each
+of which NativeScript renders with a platform-specific iOS or Android native control.
+You can find a full list of user interface components you can use in your app at
+https://docs.nativescript.org/ui/components.
+-->
+<Page xmlns="http://schemas.nativescript.org/tns.xsd" 
+    xmlns:nsDrawer="nativescript-ui-sidedrawer"
+    navigatingTo="navigatingTo" class="page" actionBarHidden="true">
+    <!--
+    The ActionBar is the NativeScript common abstraction over the Android ActionBar and iOS NavigationBar.
+    http://docs.nativescript.org/ui/action-bar
+    -->
+    <!--
+    <Page.actionBar>
+        <ActionBar title="My App" icon="" class="action-bar">
+        </ActionBar>
+    </Page.actionBar>
+    -->
+    <!--
+    The StackLayout stacks UI components on the screen—either vertically or horizontally.
+    In this case, the StackLayout does vertical stacking; you can change the stacking to
+    horizontal by applying a orientation="horizontal" attribute to the <StackLayout> element.
+    You can learn more about NativeScript layouts at
+    https://docs.nativescript.org/ui/layout-containers.
+
+    These components make use of several CSS class names that are part of the NativeScript
+    core theme, such as p-20, btn, h2, and text-center. You can view a full list of the
+    class names available for styling your app at https://docs.nativescript.org/ui/theme.
+    -->
+    <!--
+    <StackLayout class="p-20">
+        <Label text="Tap the button" class="h1 text-center"/>
+        <Button text="TAP" tap="{{ onTap }}" class="btn btn-primary btn-active"/>
+        <Label text="{{ message }}" class="h2 text-center" textWrap="true"/>
+    </StackLayout>
+    -->
+
+    <!--
+    Auto means the fisrt row is going to take up as much space as it needs,
+    and * means the rest of the space is going to be taken up the the rest of the content 
+     -->
+
+    <nsDrawer:RadSideDrawer id="SideDrawer" class="page-content">
+        <nsDrawer:RadSideDrawer.drawerTransition>
+            <nsDrawer:SlideInOnTopTransition />
+        </nsDrawer:RadSideDrawer.drawerTransition>
+
+        <nsDrawer:RadSideDrawer.drawerContent>
+             <GridLayout rows="*, auto">
+                <StackLayout style="background-color: #053140;">
+                    <Image src="res://logo" class="slide-out-img" stretch="none" />
+                    <Button tap="selectView" tag="0" class="{{ selectedViewIndex === 0 ? 'slide-out-btn' : 'slide-out-btn-selected' }}" text="My agenda" />
+                    <Button tap="selectView" tag="1" class="{{ selectedViewIndex === 1 ? 'slide-out-btn' : 'slide-out-btn-selected' }}" text="All sessions"/>
+                    <Button tap="selectView" tag="2" class="{{ selectedViewIndex === 2 ? 'slide-out-btn' : 'slide-out-btn-selected' }}" text="Sponsors" />
+                    <Button tap="selectView" tag="3" class="{{ selectedViewIndex === 3 ? 'slide-out-btn' : 'slide-out-btn-selected' }}" text="Ackknowledgements" />
+                </StackLayout>
+            </GridLayout>
+        </nsDrawer:RadSideDrawer.drawerContent>
+
+        <nsDrawer:RadSideDrawer.mainContent>
+            <GridLayout rows="auto, *">
+                <!-- Header -->
+                <StackLayout class="page-header">
+                    <GridLayout class="action-bar darker">
+                        <GridLayout class="action-wrap" tap="showSlideout" columns="auto" horizontalAlignment="left">
+                            <Image stretch="none" class="icon-image" src="res://ic_menu" />
+                        </GridLayout>
+                        <Label text="{{ actionBarTitle }}" class="action-bar-title" />
+                    </GridLayout>
+
+                    <GridLayout class="darker" visibility="{{ isSessionPage ? 'visible' : 'collapsed' }}">
+                        <SegmentedBar selectedBackgroundColor="#fac950" selectedIndex="{{ selectedIndex }}">
+                            <SegmentedBar.items>
+                                <SegmentedBarItem title="NOV 3" />
+                                <SegmentedBarItem title="NOV 4" />
+                                <SegmentedBarItem title="NOV 5" />
+                            </SegmentedBar.items>
+                        </SegmentedBar>
+                    </GridLayout>
+
+                    <Label text="{{ dayHeader }}" class="page-title bold" horizontalAlignment="center" margin="15" visibility="{{ isSessionPage ? 'visible' : 'collapsed' }}" />
+                </StackLayout>
+
+                <!-- Session Views -->
+                <GridLayout row="1">
+                    <ListView items="{{ sessions }}" itemTap="selectSession">
+                        <ListView.itemTemplate>
+                            <GridLayout columns="auto, *" class="{{ isBreak ? 'break-row' : 'list-view-row' }}">
+                                <GridLayout columns="auto" rows="auto" class="favourite-wrap" 
+                                    visibility="{{ isBreak ? 'collapsed' : 'visible' }}" tap="toggleFavorite">
+                                    <Image id="imgFav" stretch="none" class="icon-image"
+                                        src="{{ favorite ? 'res://ic_add_to_fav_1' : 'res://ic_add_to_fav' }}" />
+                                </GridLayout>
+
+                                <StackLayout col="1">
+                                    <Label text="{{ title }}" textWrap="true" class="info-bigger" />
+                                    <Label text="{{ room }}" class="info-orange" />
+                                </StackLayout>
+                            </GridLayout>
+                        </ListView.itemTemplate>
+                    </ListView>
+
+                    <ActivityIndicator busy="{{ isLoading }}" row="1" horizontalAlignment="center" verticalAlignment="center" />
+
+                </GridLayout>
+
+                  <!-- Sponsors -->
+                <StackLayout row="1" visibility="{{ selectedViewIndex === 2 ? 'visible' : 'collapsed'}}" cssClass="content-offset">
+                    <Image src="res://sponsor_logo_fdg" stretch="aspectFit"/>
+                    <Label cssClass="info" textWrap="true" text="FDG - Global Provider of IT Services" />
+                    <Image src="res://sponsor_logo_umer" stretch="aspectFit"/>
+                    <Label cssClass="info" textWrap="true" text="UMER - Business Intelligence Experts" />
+
+                </StackLayout>
+            </GridLayout>
+
+        </nsDrawer:RadSideDrawer.mainContent>
+    </nsDrawer:RadSideDrawer>
+</Page>
